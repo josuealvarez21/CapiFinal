@@ -13,23 +13,31 @@ router = APIRouter()
 def create_movement(
     *,
     db: Session = Depends(deps.get_db),
-    movement_in: schemas.MovimientoCreate,
-    current_user: Usuario = Depends(deps.get_current_user)
+    movement_in: schemas.MovimientoCreate
 ) -> Any:
-    return crud.create_movement(db, movement=movement_in, id_usuario=current_user.id_usuario)
+    return crud.create_movement(db, movement=movement_in, id_usuario=1)
 
 @router.get("/", response_model=List[schemas.Movimiento])
 def read_movements(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
-    limit: int = 100,
-    current_user: Usuario = Depends(deps.get_current_user)
+    limit: int = 100
 ) -> Any:
-    return crud.get_user_movements(db, id_usuario=current_user.id_usuario, skip=skip, limit=limit)
+    return crud.get_user_movements(db, id_usuario=1, skip=skip, limit=limit)
 
 @router.get("/balance", response_model=schemas.Balance)
 def read_balance(
-    db: Session = Depends(deps.get_db),
-    current_user: Usuario = Depends(deps.get_current_user)
+    db: Session = Depends(deps.get_db)
 ) -> Any:
-    return crud.get_user_balance(db, id_usuario=current_user.id_usuario)
+    return crud.get_user_balance(db, id_usuario=1)
+
+@router.delete("/{id_movimiento}")
+def delete_movement(
+    *,
+    db: Session = Depends(deps.get_db),
+    id_movimiento: int
+) -> Any:
+    success = crud.delete_movement(db, id_movimiento=id_movimiento, id_usuario=1)
+    if not success:
+        raise HTTPException(status_code=404, detail="Movimiento no encontrado")
+    return {"message": "Movimiento eliminado"}

@@ -18,9 +18,18 @@ class UsuarioUpdate(UsuarioBase):
 class Usuario(UsuarioBase):
     id_usuario: int
     fecha_registro: datetime
+    is_active: bool = True
 
     class Config:
         from_attributes = True
+
+# --- Auth Schemas ---
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenPayload(BaseModel):
+    sub: Optional[int] = None
 
 # --- Categoria Schemas ---
 class CategoriaBase(BaseModel):
@@ -65,6 +74,13 @@ class MetaBase(BaseModel):
 
 class MetaCreate(MetaBase):
     pass
+
+class MetaUpdateAmount(BaseModel):
+    monto_adicional: Decimal
+
+class MetaAllocation(BaseModel):
+    id_meta: int
+    monto: Decimal
 
 class Meta(MetaBase):
     id_meta: int
@@ -126,3 +142,48 @@ class Balance(BaseModel):
     total_ingresos: Decimal
     total_gastos: Decimal
     balance_actual: Decimal
+
+# --- Dashboard Schemas ---
+class DashboardSummary(BaseModel):
+    balance_total: Decimal
+    ingresos_mes: Decimal
+    gastos_mes: Decimal
+
+class CategoriaDistribucion(BaseModel):
+    nombre: str
+    valor: Decimal
+    color: str
+
+class MovimientoDashboard(BaseModel):
+    id: str
+    descripcion: str
+    monto: Decimal
+    tipo: str
+    categoria: str
+    fecha: str
+
+class MetaDashboard(BaseModel):
+    id: str
+    nombre: str
+    monto_objetivo: Decimal
+    ahorro_actual: Decimal
+    fecha_limite: Optional[date] = None
+    color: str
+
+class PresupuestoDashboard(BaseModel):
+    id: str
+    categoria: str
+    gastado: Decimal
+    limite: Decimal
+
+class DashboardUserData(BaseModel):
+    nombre: str
+
+class DashboardData(BaseModel):
+    user: DashboardUserData
+    summary: DashboardSummary
+    distribucion_gastos: List[CategoriaDistribucion]
+    ultimos_movimientos: List[MovimientoDashboard]
+    metas: List[MetaDashboard]
+    presupuestos: List[PresupuestoDashboard]
+

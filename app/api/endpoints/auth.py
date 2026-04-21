@@ -32,7 +32,7 @@ def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
     user = crud.get_user_by_email(db, email=form_data.username)
-    if not user or not security.verify_password(form_data.password, user.password): # user.password is now the hashed field
+    if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Email o contraseña incorrectos")
     
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -42,3 +42,28 @@ def login_access_token(
         ),
         "token_type": "bearer",
     }
+
+@router.post("/forgot-password")
+def forgot_password(
+    email: str,
+    db: Session = Depends(deps.get_db)
+) -> Any:
+    user = crud.get_user_by_email(db, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    # Generate token and save it (placeholder logic)
+    token = "RESET-" + str(user.id_usuario) # Simplified for now
+    user.reset_token = token
+    db.commit()
+    
+    return {"msg": "Email de recuperación enviado (Simulado)", "token": token}
+
+@router.post("/google-login")
+def google_login(
+    token: str,
+    db: Session = Depends(deps.get_db)
+) -> Any:
+    # Logic to verify Google Token would go here
+    # For now, placeholder
+    return {"msg": "Google Login iniciado", "token_verified": True}
