@@ -7,6 +7,7 @@ from datetime import datetime, date
 class UsuarioBase(BaseModel):
     nombre: str = Field(..., max_length=100)
     email: EmailStr
+    foto_perfil: Optional[str] = None
 
 class UsuarioCreate(UsuarioBase):
     password: str
@@ -178,6 +179,7 @@ class PresupuestoDashboard(BaseModel):
 
 class DashboardUserData(BaseModel):
     nombre: str
+    foto_perfil: Optional[str] = None
 
 class DashboardData(BaseModel):
     user: DashboardUserData

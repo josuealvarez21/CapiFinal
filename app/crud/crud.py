@@ -5,6 +5,7 @@ from app.schemas import schemas
 from app.schemas.schemas import UsuarioCreate, MovimientoCreate, MetaCreate, PresupuestoCreate, MetaAllocation
 from app.core.security import get_password_hash
 from decimal import Decimal
+from typing import List
 
 # --- Usuario CRUD ---
 def get_user_by_email(db: Session, email: str):

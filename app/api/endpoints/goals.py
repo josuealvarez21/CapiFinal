@@ -13,31 +13,35 @@ router = APIRouter()
 def create_goal(
     *,
     db: Session = Depends(deps.get_db),
-    goal_in: schemas.MetaCreate
+    goal_in: schemas.MetaCreate,
+    current_user: Usuario = Depends(deps.get_current_user)
 ) -> Any:
-    return crud.create_goal(db, goal=goal_in, id_usuario=1)
+    return crud.create_goal(db, goal=goal_in, id_usuario=current_user.id_usuario)
 
 @router.get("/", response_model=List[schemas.Meta])
 def read_goals(
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    current_user: Usuario = Depends(deps.get_current_user)
 ) -> Any:
-    return crud.get_user_goals(db, id_usuario=1)
+    return crud.get_user_goals(db, id_usuario=current_user.id_usuario)
 
 @router.post("/bulk-allocate/", response_model=List[schemas.Meta])
 def allocate_goals(
     *,
     db: Session = Depends(deps.get_db),
-    allocations: List[schemas.MetaAllocation]
+    allocations: List[schemas.MetaAllocation],
+    current_user: Usuario = Depends(deps.get_current_user)
 ) -> Any:
-    return crud.allocate_to_goals_batch(db, allocations=allocations, id_usuario=1)
+    return crud.allocate_to_goals_batch(db, allocations=allocations, id_usuario=current_user.id_usuario)
 
 @router.delete("/{id_meta}")
 def delete_goal(
     *,
     db: Session = Depends(deps.get_db),
-    id_meta: int
+    id_meta: int,
+    current_user: Usuario = Depends(deps.get_current_user)
 ) -> Any:
-    success = crud.delete_goal(db, id_meta=id_meta, id_usuario=1)
+    success = crud.delete_goal(db, id_meta=id_meta, id_usuario=current_user.id_usuario)
     if not success:
         raise HTTPException(status_code=404, detail="Meta no encontrada")
     return {"message": "Meta eliminada"}
@@ -47,9 +51,10 @@ def update_goal(
     *,
     db: Session = Depends(deps.get_db),
     id_meta: int,
-    goal_update: schemas.MetaUpdateAmount
+    goal_update: schemas.MetaUpdateAmount,
+    current_user: Usuario = Depends(deps.get_current_user)
 ) -> Any:
-    goal = crud.update_goal_amount(db, id_meta=id_meta, id_usuario=1, additional_amount=goal_update.monto_adicional)
+    goal = crud.update_goal_amount(db, id_meta=id_meta, id_usuario=current_user.id_usuario, additional_amount=goal_update.monto_adicional)
     if not goal:
         raise HTTPException(status_code=404, detail="Meta no encontrada")
     return goal

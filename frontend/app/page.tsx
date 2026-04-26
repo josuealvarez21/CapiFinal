@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 // --- Types ---
-interface UserData { nombre: string; }
+interface UserData { nombre: string; foto_perfil?: string; }
 interface SummaryData { balance_total: number; ingresos_mes: number; gastos_mes: number; }
 interface CategoriaDistribucion { nombre: string; valor: string | number; color: string; }
 interface Transaccion { id: string; descripcion: string; monto: number; tipo: string; categoria: string; fecha: string; }
@@ -200,23 +200,20 @@ export default function SinglePageApp() {
   // Navigation State
   const [currentTab, setCurrentTab] = useState<'dashboard'|'ingresos'|'gastos'|'metas'|'presupuestos'>('dashboard');
 
-  if (authLoading || !token) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-12 h-12 border-4 border-[#3b82f6] border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'ambos'|'ingreso'|'gasto'>('ambos');
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [categories, setCategories] = useState<CategoriaBackend[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form States
+  const [profilePicUrl, setProfilePicUrl] = useState('');
+  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
+  const [profileName, setProfileName] = useState('');
+  const [isUploadingProfilePic, setIsUploadingProfilePic] = useState(false);
   const [formData, setFormData] = useState({ monto: '', descripcion: '', id_categoria: '', fecha: new Date().toISOString().split('T')[0] });
   const [goalFormData, setGoalFormData] = useState({ nombre: '', objetivo: '', fecha: new Date().toISOString().split('T')[0] });
   const [budgetFormData, setBudgetFormData] = useState({ id_categoria: '', limite: '', fecha_mes: new Date().toISOString().slice(0, 7) }); // YYYY-MM
@@ -250,6 +247,9 @@ export default function SinglePageApp() {
       }));
       
       setData(backendData);
+      if (backendData.user && backendData.user.nombre) {
+        setProfileName(backendData.user.nombre);
+      }
     } catch (error) { console.warn(error); }
   };
 
@@ -349,6 +349,33 @@ export default function SinglePageApp() {
     finally { setIsSubmitting(false); }
   };
 
+  const handleUpdateProfilePicture = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profilePicUrl && !profilePicFile && profileName === data?.user?.nombre) return;
+    setIsUploadingProfilePic(true);
+    try {
+      const formDataToSend = new FormData();
+      if (profilePicFile) formDataToSend.append('file', profilePicFile);
+      if (profilePicUrl) formDataToSend.append('url', profilePicUrl);
+      if (profileName && profileName !== data?.user?.nombre) formDataToSend.append('nombre', profileName);
+
+      const response = await fetch('http://localhost:8000/api/v1/users/profile-picture', {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: formDataToSend
+      });
+      if (response.ok) {
+        setIsSettingsModalOpen(false);
+        setProfilePicFile(null);
+        setProfilePicUrl('');
+        await fetchData();
+      }
+    } catch (error) { console.error(error); } 
+    finally { setIsUploadingProfilePic(false); }
+  };
+
   const handleDeleteMovement = async (id: string) => {
     if (!confirm('¿Estás seguro de eliminar este movimiento?')) return;
     try {
@@ -381,6 +408,14 @@ export default function SinglePageApp() {
       if (response.ok) await fetchData();
     } catch (error) { console.error(error); }
   };
+
+  if (authLoading || !token) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-12 h-12 border-4 border-[#3b82f6] border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -421,12 +456,23 @@ export default function SinglePageApp() {
       {/* Sidebar Navigation */}
       <aside className="w-64 bg-[#1e1e1e] border-r border-[#2e2e2e] flex flex-col justify-between hidden md:flex z-10 sticky top-0 h-screen shadow-2xl">
         <div>
-          <div className="p-6 pb-8">
+          <div className="p-6 pb-4">
             <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#3b82f6] to-[#22c55e]">
               Cápi
             </h1>
             <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest font-semibold">Hub Financiero</p>
           </div>
+          
+          <div className="px-6 pb-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#3b82f6] to-[#22c55e] p-[2px] shadow-lg shrink-0">
+               <img src={data.user.foto_perfil || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.nombre)}&background=121212&color=fff`} alt="Profile" className="w-full h-full rounded-full object-cover border-2 border-[#1e1e1e]" />
+            </div>
+            <div className="overflow-hidden">
+               <p className="text-white font-bold text-sm truncate">{data.user.nombre}</p>
+               <p className="text-xs text-[#22c55e] font-semibold">Cápi Pro</p>
+            </div>
+          </div>
+
           <nav className="px-4 space-y-2 relative">
             {/* Dashboard */}
             <button 
@@ -470,7 +516,7 @@ export default function SinglePageApp() {
           </nav>
         </div>
         <div className="p-4 space-y-2 mb-4">
-          <button className="w-full flex items-center gap-4 px-5 py-4 text-gray-500 hover:bg-[#2e2e2e] hover:text-white rounded-xl font-medium transition-colors">
+          <button onClick={() => setIsSettingsModalOpen(true)} className="w-full flex items-center gap-4 px-5 py-4 text-gray-500 hover:bg-[#2e2e2e] hover:text-white rounded-xl font-medium transition-colors">
             <Settings size={22} /> Ajustes
           </button>
           <button 
@@ -1105,6 +1151,46 @@ export default function SinglePageApp() {
               </div>
               <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#8b5cf6] to-[#7c3aed] hover:from-[#7c3aed] hover:to-[#6d28d9] text-white py-4 rounded-xl font-extrabold text-lg mt-6 shadow-lg shadow-purple-900/30">
                 {isSubmitting ? 'Blindando...' : 'Fijar Bóveda'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* --- MODAL 4: SETTINGS / PROFILE --- */}
+      {isSettingsModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-[#1e1e1e] border border-[#2e2e2e] rounded-3xl p-8 w-full max-w-md shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
+            <button onClick={() => setIsSettingsModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-white transition bg-[#121212] p-2 rounded-full border border-[#2e2e2e]"><X size={20} /></button>
+            <h3 className="text-2xl font-extrabold text-white mb-6">Ajustes de Perfil</h3>
+            <form onSubmit={handleUpdateProfilePicture} className="space-y-5">
+              <div className="flex justify-center mb-6">
+                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#3b82f6] to-[#22c55e] p-[2px] shadow-lg">
+                   <img src={profilePicUrl || (profilePicFile ? URL.createObjectURL(profilePicFile) : (data.user.foto_perfil || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.nombre)}&background=121212&color=fff`))} alt="Preview" className="w-full h-full rounded-full object-cover border-4 border-[#1e1e1e]" />
+                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wider">Tu Nombre</label>
+                <input type="text" value={profileName} onChange={(e) => setProfileName(e.target.value)} className="w-full bg-[#121212] border-2 border-[#2e2e2e] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#3b82f6]" placeholder="Tu nombre completo..." />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wider">URL de Foto de Perfil</label>
+                <input type="url" value={profilePicUrl} onChange={(e) => { setProfilePicUrl(e.target.value); setProfilePicFile(null); }} className="w-full bg-[#121212] border-2 border-[#2e2e2e] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#3b82f6]" placeholder="https://ejemplo.com/mifoto.jpg" />
+              </div>
+              
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#2e2e2e]"></div></div>
+                <div className="relative flex justify-center"><span className="bg-[#1e1e1e] px-4 text-[10px] font-black text-gray-500 uppercase tracking-[2px]">O Sube un Archivo</span></div>
+              </div>
+
+              <div>
+                <input type="file" accept="image/*" onChange={(e) => { if(e.target.files && e.target.files[0]) { setProfilePicFile(e.target.files[0]); setProfilePicUrl(''); } }} className="w-full bg-[#121212] border-2 border-[#2e2e2e] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#3b82f6] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#3b82f6] file:text-white hover:file:bg-blue-600 cursor-pointer" />
+              </div>
+              
+              <button type="submit" disabled={isUploadingProfilePic || (!profilePicUrl && !profilePicFile && profileName === data.user.nombre)} className="w-full bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] text-white py-4 rounded-xl font-extrabold text-lg mt-6 shadow-lg shadow-blue-900/30 disabled:opacity-50">
+                {isUploadingProfilePic ? 'Actualizando...' : 'Guardar Cambios'}
               </button>
             </form>
           </div>

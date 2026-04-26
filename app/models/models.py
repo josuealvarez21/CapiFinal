@@ -11,6 +11,7 @@ class Usuario(Base):
     hashed_password = Column(String(255), nullable=True) # Nullable if registered via Google
     google_id = Column(String(255), unique=True, nullable=True)
     reset_token = Column(String(255), nullable=True)
+    foto_perfil = Column(String(255), nullable=True)
     is_active = Column(Integer, default=1) # 1=active, 0=inactive
     fecha_registro = Column(DateTime, server_default=func.now())
 

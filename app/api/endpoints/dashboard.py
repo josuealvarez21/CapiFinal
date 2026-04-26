@@ -12,19 +12,12 @@ router = APIRouter()
 
 @router.get("/", response_model=schemas.DashboardData)
 def get_dashboard_data(
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    current_user: Usuario = Depends(deps.get_current_user)
 ):
-    # Por defecto, usamos el usuario 1 como Demo, tal como se aprobó en el plan.
-    user_id = 1
-    user = crud.get_user_by_id(db, user_id)
-    
-    if not user:
-        # Si no existe el ID 1, buscamos por el email del demo para no duplicar
-        user = crud.get_user_by_email(db, "demo@capi.com")
-        if not user:
-            from app.schemas.schemas import UsuarioCreate
-            user = crud.create_user(db, UsuarioCreate(nombre="Usuario Demo", email="demo@capi.com", password="123"))
-        user_id = user.id_usuario
+    user = current_user
+    user_id = user.id_usuario
+
 
     # Gather data
     movements = crud.get_user_movements(db, id_usuario=user_id, limit=20)
@@ -119,7 +112,7 @@ def get_dashboard_data(
         )
 
     return schemas.DashboardData(
-        user=schemas.DashboardUserData(nombre=user.nombre),
+        user=schemas.DashboardUserData(nombre=user.nombre, foto_perfil=user.foto_perfil),
         summary=summary,
         distribucion_gastos=distribucion_gastos,
         ultimos_movimientos=ultimos_movimientos,
