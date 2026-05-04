@@ -1,23 +1,46 @@
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador para visualizar la aplicación en vivo.
+🌐 **Visualización:** Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación corriendo en vivo.
 
-Puedes comenzar a trabajar en la vista principal modificando el archivo `app/page.tsx`. Los cambios se reflejarán de forma automática en el navegador a medida que edites y guardes el archivo.
+💡 **Tip de trabajo:** Puedes comenzar a dar forma a la interfaz modificando el archivo principal en `app/page.tsx`. Gracias al *Fast Refresh*, cualquier cambio que guardes se reflejará instantáneamente en tu pantalla.
 
-Este proyecto implementa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para cargar y optimizar de manera automática [Geist](https://vercel.com/font), una moderna tipografía diseñada para Vercel.
+## 📂 Arquitectura del Proyecto
 
-## Recursos Adicionales
+El repositorio de `CapiFinal` está estructurado pensando en las mejores prácticas de desarrollo:
 
-Si deseas profundizar en el ecosistema de Next.js, te recomendamos explorar los siguientes enlaces:
+*   🧩 **Componentes Modulares:** Estructura pensada para la reutilización de código en la interfaz.
+*   📱 **Diseño Responsivo:** Adaptado para visualizarse correctamente tanto en escritorio como en dispositivos móviles.
+*   🔌 **Conexión API:** Arquitectura lista para la integración con la lógica financiera del backend.
 
-- [Documentación oficial de Next.js](https://nextjs.org/docs): Explora a fondo las características y la API del framework.
-- [Aprende Next.js](https://nextjs.org/learn): Un tutorial interactivo para dominar los fundamentos paso a paso.
+## 📚 Recursos de Aprendizaje
 
-También puedes visitar el [repositorio de Next.js en GitHub](https://github.com/vercel/next.js). ¡Tus aportes y retroalimentación siempre son bienvenidos!
+Si deseas profundizar en el ecosistema que da vida a este proyecto, aquí tienes recursos invaluables:
 
-## DespliegueBienvenido a este proyecto construido con [Next.js](https://nextjs.org), inicializado a través de [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+*   📖 [Documentación oficial de Next.js](https://nextjs.org/docs): Explora a fondo las características avanzadas y la API del framework.
+*   🎓 [Aprende Next.js](https://nextjs.org/learn): Un tutorial interactivo para dominar los fundamentos paso a paso.
 
-## Primeros Pasos
+## 🤝 Código Fuente y Contribuciones
 
-Para poner en marcha el entorno de desarrollo local, ejecuta el comando correspondiente a tu gestor de paquetes:
+El desarrollo es continuo. Puedes revisar el código, hacer seguimiento de las actualizaciones o contribuir directamente en el repositorio:
+🔗 [Repositorio Oficial de CapiFinal en GitHub](https://github.com/josuealvarez21/CapiFinal)
+
+## ☁️ Despliegue en Producción
+
+La vía más ágil, segura y con mejor rendimiento para lanzar Cápi a producción es a través de la [Plataforma de Vercel](https://vercel.com/new), creada por los mismos desarrolladores de Next.js.# 💸 Cápi: Tu Aliado en la Gestión Financiera
+
+Bienvenido a **Cápi**, una plataforma moderna, intuitiva y eficiente diseñada para tomar el control de tus finanzas personales. Este repositorio contiene toda la arquitectura frontend de la aplicación, enfocada en brindar una experiencia de usuario fluida y dinámica.
+
+## 🚀 Tecnologías y Herramientas
+
+Este proyecto está impulsado por un stack robusto y moderno para garantizar escalabilidad y el mejor rendimiento:
+
+*   **⚡ Framework Principal:** [Next.js](https://nextjs.org) (Optimizado para SSR y SSG)
+*   **⚛️ Librería de Interfaz:** React
+*   **🎨 Estilos y Diseño:** Tailwind CSS
+*   **🐍 Integración Backend:** Preparado para consumir APIs RESTful estructuradas en Python con FastAPI
+*   **🔤 Tipografía:** Geist Font (Optimizada por Vercel)
+
+## ⚙️ Primeros Pasos en Desarrollo
+
+Para clonar el proyecto y poner en marcha tu entorno local, abre tu terminal y ejecuta el comando correspondiente a tu gestor de paquetes favorito:
 ```bash
 npm run dev
 yarn dev
