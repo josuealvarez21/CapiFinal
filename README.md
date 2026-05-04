@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para visualizar la aplicación en vivo.
 
-## Getting Started
+Puedes comenzar a trabajar en la vista principal modificando el archivo `app/page.tsx`. Los cambios se reflejarán de forma automática en el navegador a medida que edites y guardes el archivo.
 
-First, run the development server:
+Este proyecto implementa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para cargar y optimizar de manera automática [Geist](https://vercel.com/font), una moderna tipografía diseñada para Vercel.
 
+## Recursos Adicionales
+
+Si deseas profundizar en el ecosistema de Next.js, te recomendamos explorar los siguientes enlaces:
+
+- [Documentación oficial de Next.js](https://nextjs.org/docs): Explora a fondo las características y la API del framework.
+- [Aprende Next.js](https://nextjs.org/learn): Un tutorial interactivo para dominar los fundamentos paso a paso.
+
+También puedes visitar el [repositorio de Next.js en GitHub](https://github.com/vercel/next.js). ¡Tus aportes y retroalimentación siempre son bienvenidos!
+
+## DespliegueBienvenido a este proyecto construido con [Next.js](https://nextjs.org), inicializado a través de [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Primeros Pasos
+
+Para poner en marcha el entorno de desarrollo local, ejecuta el comando correspondiente a tu gestor de paquetes:
 ```bash
 npm run dev
-# or
 yarn dev
-# or
 pnpm dev
-# or
 bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
