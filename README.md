@@ -37,6 +37,48 @@ El ecosistema está construido sobre un stack moderno utilizando las últimas ve
 
 ---
 
+## 📂 Estructura del Proyecto
+
+A continuación, se detalla la organización de carpetas y archivos principales del repositorio:
+
+```text
+CapiFinal/
+│
+├── app/                      # Backend (FastAPI)
+│   ├── api/                  # Controladores y rutas (Endpoints)
+│   ├── core/                 # Configuraciones globales, seguridad y JWT
+│   ├── crud/                 # Operaciones de base de datos
+│   ├── db/                   # Motor y sesión de base de datos
+│   ├── models/               # Entidades ORM (SQLAlchemy)
+│   ├── schemas/              # Modelos de validación (Pydantic)
+│   └── main.py               # Punto de entrada de FastAPI
+│
+├── frontend/                 # Frontend (Next.js)
+│   ├── app/                  # App Router de Next.js (Páginas y UI)
+│   ├── context/              # Contextos globales de React (Estado)
+│   ├── public/               # Archivos estáticos del frontend
+│   └── package.json          # Dependencias de React/Next.js
+│
+├── static/                   # Recursos estáticos globales
+│   └── uploads/profiles/     # Avatares de usuario subidos
+│
+├── tests/                    # Scripts de prueba y automatización
+│   ├── test_backend.py       # Pruebas de integración del backend
+│   ├── test_dashboard.py     # Pruebas de lógica financiera
+│   └── test_signup.py        # Pruebas de autenticación
+│
+├── base_de_datos/            # Utilidades para MySQL
+│   ├── init_db.py            # Inicialización del esquema de tablas
+│   ├── fix_db.py             # Corrección del esquema en caliente
+│   └── add_column.py         # Migración manual de columnas
+│
+├── run_all.bat               # Script ejecutable de lanzamiento simultáneo
+├── requirements.txt          # Dependencias de Python
+└── README.md                 # Documentación del proyecto
+```
+
+---
+
 ## 🏗️ Arquitectura del Sistema
 
 El backend sigue un patrón de **Arquitectura Limpia (Clean Architecture) / Arquitectura en Capas**, separando responsabilidades de la siguiente manera (`app/`):
